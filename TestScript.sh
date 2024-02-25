@@ -48,7 +48,7 @@ else
 fi
 
 echo -n "Test player can move"
-./mazeGame data/goodMaze.txt > tmp
+echo "d" | ./mazeGame data/goodMaze.txt > tmp
 if grep -q "You moved East!" tmp;
 then
     echo "Test Passed"
@@ -57,7 +57,7 @@ else
 fi
 
 echo -n "Test walls stop player"
-./mazeGame data/goodMaze.txt > tmp
+echo "s" | ./mazeGame data/goodMaze.txt > tmp
 if grep -q "There is a wall there!" tmp;
 then
     echo "Test Passed"
@@ -66,7 +66,16 @@ else
 fi
 
 echo -n "Test dealing of illegal input char"
-./mazeGame data/goodMaze.txt > tmp
+echo "z" | ./mazeGame data/goodMaze.txt > tmp
+if grep -q "Error: Bad input" tmp;
+then
+    echo "Test Passed"
+else
+    echo "Test Failed"
+fi
+
+echo -n "Test dealing of empty input"
+echo "" | ./mazeGame data/goodMaze.txt > tmp
 if grep -q "Error: Bad input" tmp;
 then
     echo "Test Passed"
@@ -75,7 +84,7 @@ else
 fi
 
 echo -n "Test dealing of a string input"
-./mazeGame data/goodMaze.txt > tmp
+echo "HI" | ./mazeGame data/goodMaze.txt > tmp
 if grep -q "Error: Bad input" tmp;
 then
     echo "Test Passed"
