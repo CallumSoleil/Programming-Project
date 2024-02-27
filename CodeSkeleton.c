@@ -44,9 +44,12 @@ int inputValidation(){
 
 }
 
-int playerMove(){
-    // Adjust playerPosition using user input
+int playerMove(){ 
+    // Adjust temporary playerPosition based on user input
     
+    // Check if that new playerPosition is # or maze edge
+    // Move player if legal
+    // Error message if not
 }
 int main(){
     // Call gameSetup()
@@ -61,6 +64,6 @@ int main(){
             // Call mapShow()
         // If user input W,A,S,D
             // Call playerMove()
-
+        
         // 
 }
