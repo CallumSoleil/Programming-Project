@@ -1,5 +1,10 @@
 //Code skelton for the maze game
 
+struct Player {
+    int currentPosition[2]; 
+    int futurePosition[2];  
+};
+
 int legalMazeCheck(){
     // Check rows and columns are in acceptance range 5-100
 
@@ -13,7 +18,7 @@ int legalMazeCheck(){
 int mapShow(){
     // Nested for loops to cycle through every position in maze array
     // Print each row together
-    // Replace player position with X
+    // Replace current player position with X
 }
 
 int gameSetup(){
@@ -28,10 +33,13 @@ int gameSetup(){
     // Validate maze using legalMazeCheck()
 
     // Create 2D array with size[rows][columns]
-
+    
     // Populate with maze contents
 
-    // playerPosition[2] = Start position coordinates
+    // Store coordinate of Exit as an array of length 2
+
+    // Create a player
+    // Set both current and future player positon to position of S in maze
 
 }
 
@@ -45,16 +53,16 @@ int inputValidation(){
 }
 
 int playerMove(){ 
-    // Adjust temporary playerPosition based on user input
+    // Adjust future player position based on user input
     
-    // Check if that new playerPosition is # or maze edge
-    // Move player if legal
+    // Check if that future player position is # or maze edge
+    // Update current player position if legal
     // Error message if not
 }
 int main(){
     // Call gameSetup()
 
-    // While player not at Exit
+    // While current player position not at Exit
 
         // Accept user input
 
