@@ -5,6 +5,7 @@ totalTests=0
 
 echo -e "__ File Handling __"
 
+# Maze file must be accessible to open
 echo -n "Test Available File - "
 ./mazeGame fakeFile.txt > tmp
 if grep -q "Error: File not available" tmp;
@@ -16,6 +17,7 @@ else
 fi
 ((totalTests++))
 
+# Set of tests to ensure the maze fits the size and character constraints
 echo -e "__ Maze Constraints __"
 
 echo -n "Test Too Large Maze - "
@@ -40,7 +42,7 @@ else
 fi
 ((totalTests++))
 
-echo -n "Test Rectangular Maze - "
+echo -n "Test for Rectangular Maze - "
 ./mazeGame TestData/inconsistentMaze.txt > tmp
 if grep -q "Error: Maze dimensions not consistent" tmp;
 then
@@ -62,7 +64,7 @@ else
 fi
 ((totalTests++))
 
-
+# Set of tests to ensure all possible user inputs are dealt with
 echo -e "__ User Inputs __"
 
 echo -n "Test dealing of illegal input char - "
@@ -110,7 +112,8 @@ else
 fi
 ((totalTests++))
 
-
+# Set of tests to check the player will move only through spaces
+# and that error messages are shown too
 echo -e "__ Player Movement __"
 
 echo -n "Test player can move - "
@@ -162,6 +165,8 @@ else
 fi
 ((totalTests++))
 
+
+# Test that the player wins when they reach the Exit
 echo -n "__ Objectibe Work __"
 
 echo -n "Test win - "
