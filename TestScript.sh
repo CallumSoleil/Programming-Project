@@ -1,7 +1,12 @@
 #!/bin/bash
 
+# Most tests were adapted forms of tests found in https://github.com/uol-feps-soc-comp1921-2324-classroom/lab2-finished/blob/main/test.sh
+# bigMaze.txt was made using https://www.dcode.fr/maze-generator
+
+
 passCount=0
 totalTests=0
+
 
 echo -e "__ File Handling __"
 
