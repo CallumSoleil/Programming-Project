@@ -8,10 +8,10 @@ char filename[20];
 
 
 
-struct Player {
+typedef struct Player {
     int currentPosition[2]; 
     int futurePosition[2];  
-};
+}Player;
 
 int legalMazeCheck(){
     if(columns < 5 || rows < 5){
@@ -38,15 +38,20 @@ int legalMazeCheck(){
         }
         charsInRow = 0;
     }
+    fclose(file);
     return 0;
 
 }
 
-int mapShow(){
-    // Nested for loops to cycle through every position in maze array
-    // Print each row together
+/*int mapShow(){
+    for (int i = 0; i < rows; i++) {
+        for (int j = 0; j < columns; j++) {
+            printf("%c ", maze[i][j]);
+        }
+        printf("\n");
+    }
     // Replace current player position with X
-}
+}*/
 
 int gameSetup(){
     printf("Enter the file name: ");
@@ -67,20 +72,33 @@ int gameSetup(){
             rows++;
         }
     }
-    printf("%d %d\n", columns, rows);
     fclose(file);
     
-    legalMazeCheck();
-
-    // Create 2D array with size[rows][columns]
-    
-    // Populate with maze contents
-
-    // Store coordinate of Exit as an array of length 2
-
-    // Create a player
-    // Set both current and future player positon to position of S in maze
-
+    if (legalMazeCheck() != 0){
+        return 3;
+    }
+    file = fopen(filename, "r");
+    struct Player player;
+    char maze[rows][columns];
+    int exit[2];
+    int j;
+    for (int i = 0; i < rows; i++){
+        j = 0;
+        while ((c = fgetc(file)) != '\n' && c != EOF ){
+            maze[i][j] = c;
+            if (c == 'E'){
+                exit[0] = i;
+                exit[1] = j;
+            }else if (c == 'S'){
+                player.currentPosition[0] = i;
+                player.currentPosition[1] = j;
+                player.futurePosition[0] = i;
+                player.futurePosition[1] = j;
+            }
+            
+            j++;
+        }
+    }
 }
 
 int inputValidation(){
@@ -103,7 +121,7 @@ int main(){
     gameSetup();
 
     // While current player position not at Exit
-
+    while (player.currentPosition[0] != exit[0] && player.currentPosition[1] != exit[1]);
         // Accept user input
 
         // Call inputValidation()
