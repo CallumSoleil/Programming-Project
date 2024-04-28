@@ -4,9 +4,7 @@
 int rows, columns;
 char c;
 char filename[20];
-
-
-
+char userInput[20];
 
 typedef struct Player {
     int currentPosition[2]; 
@@ -77,11 +75,13 @@ int gameSetup(){
     if (legalMazeCheck() != 0){
         return 3;
     }
+
     file = fopen(filename, "r");
     struct Player player;
     char maze[rows][columns];
     int exit[2];
     int j;
+
     for (int i = 0; i < rows; i++){
         j = 0;
         while ((c = fgetc(file)) != '\n' && c != EOF ){
@@ -95,7 +95,6 @@ int gameSetup(){
                 player.futurePosition[0] = i;
                 player.futurePosition[1] = j;
             }
-            
             j++;
         }
     }
@@ -103,7 +102,8 @@ int gameSetup(){
 
 int inputValidation(){
     // Check for null input
-
+    int length = strlen(userInput);
+    printf("%d", length);
     // Check for string input
 
     // Check for legal char input
@@ -122,9 +122,11 @@ int main(){
 
     // While current player position not at Exit
     while (player.currentPosition[0] != exit[0] && player.currentPosition[1] != exit[1]);
-        // Accept user input
 
-        // Call inputValidation()
+        // Accept user input
+        print("Enter input: ");
+        scanf("%s", userInput);
+        inputValidation()
 
         // If user input M
             // Call mapShow()
