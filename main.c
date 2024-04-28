@@ -3,6 +3,8 @@
 
 int rows, columns;
 char c;
+char filename[20];
+
 
 
 
@@ -12,19 +14,32 @@ struct Player {
 };
 
 int legalMazeCheck(){
-    // Check rows and columns are in acceptance range 5-100
     if(columns < 5 || rows < 5){
-        printf("Error: Maze dimensions too large");
-        return 3;
-    }else if(columns > 100 || rows > 100){
         printf("Error: Maze dimensions too small");
         return 3;
+    }else if(columns > 100 || rows > 100){
+        printf("Error: Maze dimensions too large");
+        return 3;
     }
-    // Check every row has same length
 
-    // Check every column has same length
+    FILE *file = fopen(filename, "r");
+    int charsInRow = 0;
+    for(int i = 0; i < rows; i++){
+        while ((c = fgetc(file)) != '\n' && c != EOF ){
+            charsInRow++;
+            if(c != ' ' && c != '#' && c != 'S' && c != 'E'){
+                printf("Error: Maze contains illegal characters %c", c);
+                return 3;
+            }
+        }
+        if(charsInRow != columns){
+            printf("Error: Maze dimensions not consistent   %d", i);
+            return 3;
+        }
+        charsInRow = 0;
+    }
+    return 0;
 
-    // Check only legal characters are in maze
 }
 
 int mapShow(){
@@ -34,8 +49,6 @@ int mapShow(){
 }
 
 int gameSetup(){
-    char filename[20];
-
     printf("Enter the file name: ");
     scanf("%s", filename);
 
@@ -55,12 +68,10 @@ int gameSetup(){
         }
     }
     printf("%d %d\n", columns, rows);
-    // Count number of lines in file, storing in a variable (rows)
-
-    // Count number of chars in first line of file, storing in a variable (columns)
-
-    // Validate maze using legalMazeCheck()
+    fclose(file);
+    
     legalMazeCheck();
+
     // Create 2D array with size[rows][columns]
     
     // Populate with maze contents
