@@ -1,22 +1,28 @@
 #include <stdio.h>
 #include <string.h>
-
-int rows, columns;
-char c;
-char filename[20];
-char userInput[20];
+#include <ctype.h>
 
 typedef struct Player {
     int currentPosition[2]; 
     int futurePosition[2];  
 }Player;
 
+int rows, columns;
+char c;
+char filename[20];
+char userInput[20];
+struct Player player;
+int exitPos[2];
+char inputChar;
+char maze[100][100];
+
+
 int legalMazeCheck(){
     if(columns < 5 || rows < 5){
-        printf("Error: Maze dimensions too small");
+        printf("Error: Maze dimensions too small\n");
         return 3;
     }else if(columns > 100 || rows > 100){
-        printf("Error: Maze dimensions too large");
+        printf("Error: Maze dimensions too large\n");
         return 3;
     }
 
@@ -26,12 +32,12 @@ int legalMazeCheck(){
         while ((c = fgetc(file)) != '\n' && c != EOF ){
             charsInRow++;
             if(c != ' ' && c != '#' && c != 'S' && c != 'E'){
-                printf("Error: Maze contains illegal characters %c", c);
+                printf("Error: Maze contains illegal characters\n");
                 return 3;
             }
         }
         if(charsInRow != columns){
-            printf("Error: Maze dimensions not consistent   %d", i);
+            printf("Error: Maze dimensions not consistent\n");
             return 3;
         }
         charsInRow = 0;
@@ -77,18 +83,17 @@ int gameSetup(){
     }
 
     file = fopen(filename, "r");
-    struct Player player;
-    char maze[rows][columns];
-    int exit[2];
+    
     int j;
+    
 
     for (int i = 0; i < rows; i++){
         j = 0;
         while ((c = fgetc(file)) != '\n' && c != EOF ){
             maze[i][j] = c;
             if (c == 'E'){
-                exit[0] = i;
-                exit[1] = j;
+                exitPos[0] = i;
+                exitPos[1] = j;
             }else if (c == 'S'){
                 player.currentPosition[0] = i;
                 player.currentPosition[1] = j;
@@ -101,37 +106,71 @@ int gameSetup(){
 }
 
 int inputValidation(){
-    // Check for null input
-    int length = strlen(userInput);
-    printf("%d", length);
-    // Check for string input
 
-    // Check for legal char input
+    if (userInput[strlen(userInput) - 1] == '\n'){
+        userInput[strlen(userInput) - 1] = '\0';
+    }
 
+    if (strlen(userInput) != 1) {
+        printf("Error: Bad input\n");
+        return -1;
+    } else {
+        inputChar = tolower(userInput[0]);
+        if (inputChar != 'm' && inputChar != 'w' && inputChar != 'a' && inputChar != 's' && inputChar != 'd'){
+            printf("Error: Bad \n");
+            return -1;
+        }else{
+            return 0;
+        }
+    }
 }
 
 int playerMove(){ 
     // Adjust future player position based on user input
-    
-    // Check if that future player position is # or maze edge
-    // Update current player position if legal
-    // Error message if not
+    switch (inputChar){
+        case 'w':
+            player.futurePosition[0] = player.currentPosition[0] - 1;
+            break;
+        case 'a':
+            player.futurePosition[1] = player.currentPosition[1] - 1;
+            break;
+        case 's':
+            player.futurePosition[0] = player.currentPosition[0] + 1;
+            break;
+        case 'd':
+            player.futurePosition[1] = player.currentPosition[1] - 1;
+            break;
+    }
+    if (player.futurePosition[0] < 0 || player.futurePosition[1] < 0 || player.futurePosition[0] >= rows || player.futurePosition[1] >= columns){
+        printf("Thats the edge of the maze!\n");
+    }
+    else if (maze[player.futurePosition[0]][player.futurePosition[1]] == '#' ){
+        printf("There is a wall there!\n");
+    }else{
+        player.currentPosition[0] = player.futurePosition[0];
+        player.currentPosition[0] = player.futurePosition[0];
+    }
+
 }
 int main(){
     gameSetup();
 
     // While current player position not at Exit
-    while (player.currentPosition[0] != exit[0] && player.currentPosition[1] != exit[1]);
+    while (player.currentPosition[0] != exitPos[0] && player.currentPosition[1] != exitPos[1]){
 
         // Accept user input
-        print("Enter input: ");
-        scanf("%s", userInput);
-        inputValidation()
-
-        // If user input M
-            // Call mapShow()
-        // If user input W,A,S,D
-            // Call playerMove()
+        printf("Enter input: ");
+        fgets(userInput, sizeof(userInput), stdin);
+    
         
-        // 
+        if (inputValidation() == 0){
+            if(inputChar == 'm'){
+                printf("mapShow()");
+            }
+            else{
+                playerMove();
+            }
+        }
+    }
+    printf("FINISHED");
 }
