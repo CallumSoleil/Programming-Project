@@ -69,8 +69,10 @@ int legalMazeCheck(){
 
 int mapShow(){
     printf("\n");
+    // Nested for loops to cycle through every position in maze array
     for (int i = 0; i < rows; i++) {
         for (int j = 0; j < columns; j++) {
+            // Replace current player position with X
             if (player.currentPosition[0] == i && player.currentPosition[1] == j){
                 printf("X");
             }else{
@@ -83,25 +85,26 @@ int mapShow(){
 }
 
 int gameSetup(){
-    
+    // Open maze file with validation to check it exists
     FILE *file = fopen(filename, "r");
     if (file == NULL) {
         printf("Error: File not available\n");
         return 2;
     }
-    //counts chars in first row
+    // Count number of chars in first line of file, storing in a variable (columns)
     while ((c = fgetc(file)) != EOF && c != '\n') {
         columns++;
     }
-    //counts remaining rows
-    rows = 2;
+    // Count the remaning number of lines in file, storing in a variable (rows)
+    rows = 2;  // Accounts for the first line and last line
     while ((c = fgetc(file)) != EOF) {
         if (c == '\n') {
             rows++;
         }
     }
     fclose(file);
-    
+
+    // Validate maze using legalMazeCheck()
     if (legalMazeCheck() != 0){
         return 3;
     }
@@ -109,16 +112,18 @@ int gameSetup(){
     file = fopen(filename, "r");
     
     int j;
-    
-
+    // Populate with maze array contents
     for (int i = 0; i < rows; i++){
         j = 0;
         while ((c = fgetc(file)) != '\n' && c != EOF ){
             maze[i][j] = c;
+            // Store coordinate of Exit as an array of length 2
             if (c == 'E'){
                 exitPos[0] = i;
                 exitPos[1] = j;
-            }else if (c == 'S'){
+            }
+            // Set both current and future player positon to position of S in maze
+            else if (c == 'S'){
                 player.currentPosition[0] = i;
                 player.currentPosition[1] = j;
                 player.futurePosition[0] = i;
@@ -131,15 +136,16 @@ int gameSetup(){
 }
 
 int inputValidation(){
-
+    // Remove new line character if there
     if (userInput[strlen(userInput) - 1] == '\n'){
         userInput[strlen(userInput) - 1] = '\0';
     }
-
+    // Check for length of input
     if (strlen(userInput) != 1) {
         printf("Error: Bad input\n");
         return -1;
     } else {
+        // Check for legal char input
         inputChar = tolower(userInput[0]);
         if (inputChar != 'm' && inputChar != 'w' && inputChar != 'a' && inputChar != 's' && inputChar != 'd'){
             printf("Error: Bad \n");
@@ -152,6 +158,7 @@ int inputValidation(){
 
 int playerMove(){ 
     // Adjust future player position based on user input
+    // Update message based on direction of movement
     switch (inputChar){
         case 'w':
             player.futurePosition[0] = player.currentPosition[0] - 1;
@@ -170,57 +177,64 @@ int playerMove(){
             strcpy(message, "East");
             break;
     }
+    // Check if that future player position is maze edge
     if (player.futurePosition[0] < 0 || player.futurePosition[1] < 0 || player.futurePosition[0] >= rows || player.futurePosition[1] >= columns){
         printf("Thats the edge of the maze!\n");
         player.futurePosition[0] = player.currentPosition[0];
         player.futurePosition[1] = player.currentPosition[1];
     }
+    // Check if that future player position is # 
     else if (maze[player.futurePosition[0]][player.futurePosition[1]] == '#' ){
         printf("There is a wall there!\n");
         player.futurePosition[0] = player.currentPosition[0];
         player.futurePosition[1] = player.currentPosition[1];
     }else {
+        // Update players position
+        // Print movement message
         player.currentPosition[0] = player.futurePosition[0];
         player.currentPosition[1] = player.futurePosition[1];
         printf("You moved %s!\n", message);
     }
 
 }
+
 int main(int argc, char *argv[]){
+    // Check only 2 arguments given (program call and maze file)
     if(argc != 2){
         printf("Error: Incorrect Arguments");
         return 1;
     }else{
-    strcpy(filename, argv[1]);
+        strcpy(filename, argv[1]);
 
-    int setupReturnVal = gameSetup();
-    if(setupReturnVal == 2){
-        return 2;
-    }else if (setupReturnVal == 3){
-        return 3;
-    }
-    char playing = 'T';
-    // While current player position not at Exit
-    while (playing == 'T'){
+        int setupReturnVal = gameSetup();
+        // Return correct value based on any errors
+        if(setupReturnVal == 2){
+            return 2;
+        }else if (setupReturnVal == 3){
+            return 3;
+        }
+        char playing = 'T';
+        // While current player position not at Exit
+        while (playing == 'T'){
+            // Accept user input
+            printf("\nEnter input: ");
+            fgets(userInput, sizeof(userInput), stdin);
 
-        // Accept user input
-        printf("\nEnter input: ");
-        fgets(userInput, sizeof(userInput), stdin);
-    
-        
-        if (inputValidation() == 0){
-            if(inputChar == 'm'){
-                mapShow();
+            // Check user input is legal
+            if (inputValidation() == 0){
+                if(inputChar == 'm'){
+                    mapShow();
+                }
+                else{
+                    playerMove();
+                }
             }
-            else{
-                playerMove();
+            // Check at exit, ending while loop if true
+            if(player.currentPosition[0] == exitPos[0] && player.currentPosition[1] == exitPos[1]){
+                playing = 'F';
             }
         }
-        if(player.currentPosition[0] == exitPos[0] && player.currentPosition[1] == exitPos[1]){
-            playing = 'F';
-        }
-    }
-    printf("\nCONGRATULATIONS YOU WON!!\n");
-    return 0;
+        printf("\nCONGRATULATIONS YOU WON!!\n");
+        return 0;
     }
 }
